@@ -5,15 +5,12 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
+
 @Getter
 @Entity
 @Table(name = "JobSeeker")
-public class JobSeeker {
-
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class JobSeeker extends User{
 
     private String fullName;
     private String email;
@@ -27,8 +24,39 @@ public class JobSeeker {
 
     public JobSeeker() {}
 
+
+
+
+
+
+    public Integer getUserID(){
+        return super.getUserID();
+    }
+    public String getFullName() {
+        return fullName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public String getResume() {
+        return resume;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
     private JobSeeker(Builder builder) {
-        this.id = builder.id;
         this.fullName = builder.fullName;
         this.email = builder.email;
         this.phoneNumber = builder.phoneNumber;
@@ -40,7 +68,7 @@ public class JobSeeker {
     @Override
     public String toString() {
         return "JobSeeker{" +
-                "id=" + id +
+                "id=" + getUserID() +
                 ", fullName='" + fullName + '\'' +
                 ", email='" + email + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
@@ -51,7 +79,6 @@ public class JobSeeker {
 
 
     public static class Builder {
-        private Integer id;
         private String fullName;
         private String email;
         private String phoneNumber;
@@ -59,10 +86,6 @@ public class JobSeeker {
         private String resume;
         private String location;
 
-        public Builder setId(Integer id) {
-            this.id = id;
-            return this;
-        }
 
         public Builder setFullName(String fullName) {
             this.fullName = fullName;
@@ -95,7 +118,6 @@ public class JobSeeker {
         }
 
         public Builder copy(JobSeeker jobSeeker) {
-            this.id = jobSeeker.id;
             this.fullName = jobSeeker.fullName;
             this.email = jobSeeker.email;
             this.phoneNumber = jobSeeker.phoneNumber;

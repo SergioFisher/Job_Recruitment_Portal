@@ -2,17 +2,14 @@ package za.ac.cput.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import org.apache.catalina.User;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "Employer")
-public class Employer extends User {
+@Table(name = "employer")
+public class Employer extends User{
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id
-    private Long employerID;
     private String companyName;
     private String industry;
     private String website;
@@ -29,7 +26,6 @@ public class Employer extends User {
     }
 
     private Employer(Builder builder) {
-        this.employerID = builder.employerID;
         this.companyName = builder.companyName;
         this.industry = builder.industry;
         this.website = builder.website;
@@ -39,8 +35,8 @@ public class Employer extends User {
     }
 
     // === Getters ===
-    public Long getEmployerID() {
-        return employerID;
+    public Integer getEmployerID() {
+        return super.getUserID();
     }
 
     public String getCompanyName() {
@@ -83,7 +79,6 @@ public class Employer extends User {
 
     // === Builder Pattern ===
     public static class Builder {
-        private Long employerID;
         private String companyName;
         private String industry;
         private String website;
@@ -91,10 +86,6 @@ public class Employer extends User {
         private String contactPerson;
         private List<JobListing> jobListings = new ArrayList<>();
 
-        public Builder setEmployerID(Long employerID) {
-            this.employerID = employerID;
-            return this;
-        }
 
         public Builder setCompanyName(String companyName) {
             this.companyName = companyName;
@@ -127,7 +118,6 @@ public class Employer extends User {
         }
 
         public Builder copy(Employer employer) {
-            this.employerID = employer.getEmployerID();
             this.companyName = employer.getCompanyName();
             this.industry = employer.getIndustry();
             this.website = employer.getWebsite();

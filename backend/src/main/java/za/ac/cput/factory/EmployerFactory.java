@@ -6,8 +6,7 @@ import java.util.List;
 
 public class EmployerFactory {
 
-        public static Employer createEmployer( Long employerID,
-                                               String companyName,
+        public static Employer createEmployer(String companyName,
                                                String industry,
                                                String website,
                                                String location,
@@ -23,7 +22,6 @@ public class EmployerFactory {
             }
 
             return new Employer.Builder()
-                    .setEmployerID(employerID)
                     .setCompanyName(companyName)
                     .setIndustry(industry)
                     .setWebsite(website)

@@ -1,5 +1,6 @@
 package za.ac.cput.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import za.ac.cput.domain.Employer;
 import za.ac.cput.repository.EmployerRepository;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class EmployerService implements IEmployerService{
 
     private final EmployerRepository repository;
@@ -22,7 +24,7 @@ public class EmployerService implements IEmployerService{
     }
 
     @Override
-    public Optional<Employer> read(Long id) {
+    public Optional<Employer> read(Integer id) {
         return repository.findById(id);
     }
 

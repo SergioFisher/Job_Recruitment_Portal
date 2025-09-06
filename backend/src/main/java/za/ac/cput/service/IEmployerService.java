@@ -11,7 +11,7 @@ public interface IEmployerService {
 
     Employer save(Employer employer);
 
-    Optional<Employer> read(Long id);
+    Optional<Employer> read(Integer id);
 
     Employer update(Employer employer);
 

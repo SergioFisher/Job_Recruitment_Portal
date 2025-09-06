@@ -24,7 +24,7 @@ public class EmployerController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<Employer> read(@PathVariable Long id) {
+    public ResponseEntity<Employer> read(@PathVariable Integer id) {
         return service.read(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -32,7 +32,7 @@ public class EmployerController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<Employer> update(@PathVariable Long id, @RequestBody Employer updatedData) {
+    public ResponseEntity<Employer> update(@PathVariable Integer id, @RequestBody Employer updatedData) {
         return service.read(id)
                 .map(existing -> {
                     Employer updatedEmployer = new Employer.Builder()

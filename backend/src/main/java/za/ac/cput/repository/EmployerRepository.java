@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import za.ac.cput.domain.Employer;
 
 @Repository
-public interface EmployerRepository extends JpaRepository<Employer, Long> {
+public interface EmployerRepository extends JpaRepository<Employer, Integer> {
 }
