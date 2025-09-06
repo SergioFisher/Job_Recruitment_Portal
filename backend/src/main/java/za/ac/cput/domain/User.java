@@ -1,10 +1,14 @@
 package za.ac.cput.domain;
 
 import jakarta.persistence.*;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
-public abstract class User {
+@Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "users")
+public abstract class User{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

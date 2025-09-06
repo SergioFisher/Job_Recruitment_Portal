@@ -1,15 +1,13 @@
 package za.ac.cput.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
 
 import java.time.LocalDate;
 
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
-@Getter
+
 @Entity
-@Table(name = "JobSeeker")
+@Table(name = "job_seekers")
 public class JobSeeker extends User{
 
     private String fullName;
