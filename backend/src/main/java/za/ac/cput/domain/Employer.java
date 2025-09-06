@@ -2,14 +2,13 @@ package za.ac.cput.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-
+import org.apache.catalina.User;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "Employer")
-public class Employer  {
+public class Employer extends User {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -20,12 +19,12 @@ public class Employer  {
     private String location;
     private String contactPerson;
 
-
+    // One employer can post many job listings
     @OneToMany(mappedBy = "employer", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("employer-joblisting")
     private List<JobListing> jobListings = new ArrayList<>();
 
-
+    // Default constructor required by JPA
     protected Employer() {
     }
 
@@ -39,6 +38,7 @@ public class Employer  {
         this.jobListings = builder.jobListings;
     }
 
+    // === Getters ===
     public Long getEmployerID() {
         return employerID;
     }
@@ -67,7 +67,7 @@ public class Employer  {
         return jobListings;
     }
 
-
+    // === toString ===
     @Override
     public String toString() {
         return "Employer{" +
@@ -81,7 +81,7 @@ public class Employer  {
                 '}';
     }
 
-
+    // === Builder Pattern ===
     public static class Builder {
         private Long employerID;
         private String companyName;
