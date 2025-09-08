@@ -8,6 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "employer")
+@PrimaryKeyJoinColumn(name = "userID")
 public class Employer extends User{
 
     private String companyName;
@@ -22,10 +23,18 @@ public class Employer extends User{
     private List<JobListing> jobListings = new ArrayList<>();
 
     // Default constructor required by JPA
-    protected Employer() {
+    public Employer(String email, String password, String role) {
+
+        super(email, password, "EMPLOYER");
+    }
+
+    public Employer() {
+
+        super();
     }
 
     private Employer(Builder builder) {
+        super(builder.email, builder.password, builder.role);
         this.companyName = builder.companyName;
         this.industry = builder.industry;
         this.website = builder.website;
@@ -37,6 +46,18 @@ public class Employer extends User{
     // === Getters ===
     public Integer getEmployerID() {
         return super.getUserID();
+    }
+
+    public String getEmail() {
+        return super.getEmail();
+    }
+
+    public String getPassword() {
+        return super.getPassword();
+    }
+
+    public String getRole() {
+        return super.getRole();
     }
 
     public String getCompanyName() {
@@ -79,6 +100,10 @@ public class Employer extends User{
 
     // === Builder Pattern ===
     public static class Builder {
+
+        private String email;
+        private String password;
+        private String role = "EMPLOYER";
         private String companyName;
         private String industry;
         private String website;
@@ -86,6 +111,22 @@ public class Employer extends User{
         private String contactPerson;
         private List<JobListing> jobListings = new ArrayList<>();
 
+
+
+        public Employer.Builder setEmail(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public Employer.Builder setPassword(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public Employer.Builder setRole(String role) {
+            this.role = role;
+            return this;
+        }
 
         public Builder setCompanyName(String companyName) {
             this.companyName = companyName;

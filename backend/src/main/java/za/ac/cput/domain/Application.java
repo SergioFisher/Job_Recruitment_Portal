@@ -12,19 +12,22 @@ public class Application {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "applicationid")
     private Integer applicationID;
 
 
     @ManyToOne
-    @JoinColumn(name = "jobSeeker_id", referencedColumnName = "userID")
+    @JoinColumn(name = "job_seeker_id", referencedColumnName = "userID")
     private JobSeeker jobSeeker;
 
     @ManyToOne
-    @JoinColumn(name = "jobListing_id", referencedColumnName = "id")
+    @JoinColumn(name = "job_listing_id", referencedColumnName = "id")
     private JobListing jobListing;
 
+    @Column(name = "cover_letter")
     private String coverLetter;
 
+    @Column(name = "applied_date")
     private LocalDate appliedDate;
 
     private String status="ACTIVE";

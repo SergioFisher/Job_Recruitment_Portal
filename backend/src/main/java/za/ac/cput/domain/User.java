@@ -12,6 +12,7 @@ public abstract class User{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "userID", nullable = false, updatable = false, columnDefinition = "INT")
     private Integer userID;
 
     @Column(nullable = false, unique = true)
@@ -26,6 +27,13 @@ public abstract class User{
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+
+    protected User(String email, String password, String role) {
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.createdAt = LocalDateTime.now();
+    }
 
     public User(){
 

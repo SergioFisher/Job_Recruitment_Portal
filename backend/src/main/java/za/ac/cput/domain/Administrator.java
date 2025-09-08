@@ -7,6 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "administrators")
+@PrimaryKeyJoinColumn(name = "userID")
 public class Administrator extends User {
 
     private String fullName;

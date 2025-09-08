@@ -1,17 +1,14 @@
 package za.ac.cput.domain;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDate;
-
-
 
 @Entity
 @Table(name = "job_seekers")
-public class JobSeeker extends User{
+@PrimaryKeyJoinColumn(name = "userID")
+public class JobSeeker extends User {
 
     private String fullName;
-    private String email;
     private String phoneNumber;
     private LocalDate dateOfBirth;
 
@@ -20,22 +17,32 @@ public class JobSeeker extends User{
 
     private String location;
 
-    public JobSeeker() {}
+    public JobSeeker(String email, String password, String role) {
+        super(email, password, role);
+    }
 
+    public JobSeeker() {
+        super();
+    }
 
-
-
-
-
-    public Integer getUserID(){
+    public Integer getUserID() {
         return super.getUserID();
     }
+
     public String getFullName() {
         return fullName;
     }
 
     public String getEmail() {
-        return email;
+        return super.getEmail();
+    }
+
+    public String getPassword() {
+        return super.getPassword();
+    }
+
+    public String getRole() {
+        return super.getRole();
     }
 
     public String getPhoneNumber() {
@@ -55,8 +62,8 @@ public class JobSeeker extends User{
     }
 
     private JobSeeker(Builder builder) {
+        super(builder.email, builder.password, builder.role);
         this.fullName = builder.fullName;
-        this.email = builder.email;
         this.phoneNumber = builder.phoneNumber;
         this.dateOfBirth = builder.dateOfBirth;
         this.resume = builder.resume;
@@ -65,33 +72,43 @@ public class JobSeeker extends User{
 
     @Override
     public String toString() {
-        return "JobSeeker{" +
+        return "JobSeekerRepository{" +
                 "id=" + getUserID() +
                 ", fullName='" + fullName + '\'' +
-                ", email='" + email + '\'' +
+                ", email='" + getEmail() + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", dateOfBirth=" + dateOfBirth +
                 ", location='" + location + '\'' +
                 '}';
     }
 
-
     public static class Builder {
-        private String fullName;
         private String email;
+        private String password;
+        private String role = "JOB_SEEKER";
+        private String fullName;
         private String phoneNumber;
         private LocalDate dateOfBirth;
         private String resume;
         private String location;
 
-
-        public Builder setFullName(String fullName) {
-            this.fullName = fullName;
+        public Builder setEmail(String email) {
+            this.email = email;
             return this;
         }
 
-        public Builder setEmail(String email) {
-            this.email = email;
+        public Builder setPassword(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public Builder setRole(String role) {
+            this.role = role;
+            return this;
+        }
+
+        public Builder setFullName(String fullName) {
+            this.fullName = fullName;
             return this;
         }
 
@@ -116,8 +133,10 @@ public class JobSeeker extends User{
         }
 
         public Builder copy(JobSeeker jobSeeker) {
+            this.email = jobSeeker.getEmail();
+            this.password = jobSeeker.getPassword();
+            this.role = jobSeeker.getRole();
             this.fullName = jobSeeker.fullName;
-            this.email = jobSeeker.email;
             this.phoneNumber = jobSeeker.phoneNumber;
             this.dateOfBirth = jobSeeker.dateOfBirth;
             this.resume = jobSeeker.resume;

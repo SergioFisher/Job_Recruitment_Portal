@@ -9,6 +9,7 @@ public class JobListing {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JoinColumn(name = "job_listing_id")
     private Integer id;
 
     private String title;
