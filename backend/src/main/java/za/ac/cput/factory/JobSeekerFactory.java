@@ -15,7 +15,7 @@ public class JobSeekerFactory {
             String resume,
             String location
     ) {
-        // Basic validation
+        
         if (email == null || email.isBlank())
             throw new IllegalArgumentException("Email is required.");
         if (password == null || password.isBlank())
@@ -29,7 +29,7 @@ public class JobSeekerFactory {
         if (location == null || location.isBlank())
             throw new IllegalArgumentException("Location is required.");
 
-        // Use Builder to create JobSeeker
+    
         return new JobSeeker.Builder()
                 .setEmail(email)
                 .setPassword(password)
