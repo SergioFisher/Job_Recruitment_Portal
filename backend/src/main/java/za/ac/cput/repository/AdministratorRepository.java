@@ -7,5 +7,8 @@ import za.ac.cput.domain.Administrator;
 @Repository
 public interface AdministratorRepository extends JpaRepository<Administrator,Integer> {
 
+    Administrator findByEmail(String email);
+
+    Administrator findByEmailIgnoreCase(String email);
 
 }

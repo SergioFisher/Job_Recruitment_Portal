@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function HomePage() {
     const [job, setJob] = useState("");
@@ -12,13 +13,15 @@ export default function HomePage() {
                 <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
                     <h1 className="text-2xl font-bold text-blue-600">JobFinder</h1>
                     <nav className="space-x-6">
-                        <a href="#" className="text-gray-700 hover:text-blue-600">Login</a>
-                        <a href="#" className="text-gray-700 hover:text-blue-600">Employers</a>
+                        <Link to="/login" className="text-gray-700 hover:text-blue-600">Login</Link>
+                        <Link to="/employer/login" className="text-gray-700 hover:text-blue-600">Employers</Link>
+                        <Link to="/jobs" className="text-gray-700 hover:text-blue-600">Job Listings</Link>
+                        <Link to="/register" className="text-gray-700 hover:text-blue-600">Register</Link>
                     </nav>
                 </div>
             </header>
 
-            {/* Hero/Search Section */}
+            {/* Search Section */}
             <main className="flex-1 flex flex-col justify-center items-center text-center px-4">
                 <h2 className="text-4xl font-extrabold text-gray-800 mb-6">
                     Find your next job

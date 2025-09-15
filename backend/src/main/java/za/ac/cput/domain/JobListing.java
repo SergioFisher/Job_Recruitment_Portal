@@ -15,9 +15,9 @@ public class JobListing {
     private String title;
     private String description;
     private String location;
-    private String employmentType; // e.g. Full-time, Part-time, Contract
+    private String employmentType;
     private LocalDate postedDate;
-    private String status = "OPEN"; // OPEN, CLOSED, FILLED
+    private String status = "OPEN";
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employer_id", nullable = false)

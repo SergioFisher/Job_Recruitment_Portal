@@ -1,51 +1,129 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { Box, Typography, TextField, Button } from '@mui/material';
+import { useState } from "react";
 
-function Register() {
+export default function Register() {
   const [form, setForm] = useState({
-    email: '',
-    password: '',
-    firstName: '',
-    lastName: '',
-    phone: '',
-    address: '',
-    profileSummary: ''
+    email: "",
+    password: "",
+    firstName: "",
+    lastName: "",
+    phone: "",
+    address: "",
+    profileSummary: "",
   });
   const [success, setSuccess] = useState(false);
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    axios.post('http://localhost:8080/api/jobseekers', form)
-      .then(() => setSuccess(true));
+    try {
+      const res = await fetch("http://localhost:8080/api/jobseekers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (res.ok) {
+        setSuccess(true);
+        setForm({
+          email: "",
+          password: "",
+          firstName: "",
+          lastName: "",
+          phone: "",
+          address: "",
+          profileSummary: "",
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
-    <Box sx={{ minHeight: '100vh', minWidth: '100vw', display: 'flex', justifyContent: 'center', alignItems: 'center', background: 'rgba(240,245,255,0.5)' }}>
-      <Box sx={{ maxWidth: 420, width: '100%', boxShadow: 6, borderRadius: 4, p: 2, background: 'linear-gradient(135deg, #1976d2 60%, #00bcd4 100%)' }}>
-        <Typography variant="h4" gutterBottom textAlign="center" sx={{ color: '#fff', fontWeight: 700 }}>
-          Jobseeker Registration
-        </Typography>
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-          <TextField label="First Name" name="firstName" value={form.firstName} onChange={handleChange} required sx={{ bgcolor: '#fff', borderRadius: 2 }} />
-          <TextField label="Last Name" name="lastName" value={form.lastName} onChange={handleChange} required sx={{ bgcolor: '#fff', borderRadius: 2 }} />
-          <TextField label="Email" name="email" type="email" value={form.email} onChange={handleChange} required sx={{ bgcolor: '#fff', borderRadius: 2 }} />
-          <TextField label="Password" name="password" type="password" value={form.password} onChange={handleChange} required sx={{ bgcolor: '#fff', borderRadius: 2 }} />
-          <TextField label="Phone" name="phone" value={form.phone} onChange={handleChange} required sx={{ bgcolor: '#fff', borderRadius: 2 }} />
-          <TextField label="Address" name="address" value={form.address} onChange={handleChange} required sx={{ bgcolor: '#fff', borderRadius: 2 }} />
-          <TextField label="Profile Summary" name="profileSummary" value={form.profileSummary} onChange={handleChange} multiline minRows={2} required sx={{ bgcolor: '#fff', borderRadius: 2 }} />
-          <Button type="submit" variant="contained" color="secondary" size="large" sx={{ fontWeight: 600, borderRadius: 2, mt: 2 }}>Register</Button>
-        </form>
-        {success && (
-          <Typography color="success.main" mt={2} textAlign="center">Registration successful!</Typography>
-        )}
-      </Box>
-    </Box>
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+        <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-8">
+          <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
+            Jobseeker Registration
+          </h2>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <input
+                type="text"
+                name="firstName"
+                placeholder="First Name"
+                value={form.firstName}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+            <input
+                type="text"
+                name="lastName"
+                placeholder="Last Name"
+                value={form.lastName}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+            <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={form.email}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+            <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={form.password}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+            <input
+                type="text"
+                name="phone"
+                placeholder="Phone"
+                value={form.phone}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+            <input
+                type="text"
+                name="address"
+                placeholder="Address"
+                value={form.address}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+            <textarea
+                name="profileSummary"
+                placeholder="Profile Summary"
+                value={form.profileSummary}
+                onChange={handleChange}
+                rows="3"
+                required
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            ></textarea>
+            <button
+                type="submit"
+                className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
+            >
+              Register
+            </button>
+          </form>
+          {success && (
+              <p className="text-green-600 text-center mt-4 font-medium">
+                Registration successful!
+              </p>
+          )}
+        </div>
+      </div>
   );
 }
-
-export default Register;

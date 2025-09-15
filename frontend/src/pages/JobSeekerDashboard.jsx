@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Button } from '@mui/material';
+import {Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Box, Typography} from "@mui/material";
 import { useNavigate } from 'react-router-dom';
 
 function ApplyToJob({ jobId, jobSeekerId, onClose }) {

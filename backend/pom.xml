@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>za.ac.cput</groupId>
-    <artifactId>jobRecruitmentPortal</artifactId>
+    <artifactId>Job_Recruitment_Portal-main</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <parent>

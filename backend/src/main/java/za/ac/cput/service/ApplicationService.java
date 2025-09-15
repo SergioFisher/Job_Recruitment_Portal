@@ -16,12 +16,14 @@ public class ApplicationService implements IApplicationService{
 
     @Autowired
     ApplicationService(ApplicationRepository repository){
+
         this.repository = repository;
     }
 
 
     @Override
     public Application create(Application application){
+
         return repository.save(application);
     }
 

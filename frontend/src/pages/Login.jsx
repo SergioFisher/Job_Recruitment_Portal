@@ -1,73 +1,75 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { Box, Typography, TextField, Button, Card, CardContent } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-function Login() {
-  const [form, setForm] = useState({
-    email: '',
-    password: ''
-  });
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
-  const navigate = useNavigate();
+const loginEndpoints = [
+    { role: "ADMIN", url: "http://localhost:8080/jobRecruitmentPortal/administrator/login" },
+    { role: "JOBSEEKER", url: "http://localhost:8080/jobRecruitmentPortal/jobseekers/login" },
+    { role: "EMPLOYER", url: "http://localhost:8080/jobRecruitmentPortal/employers/login" },
+];
 
-  const handleChange = e => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+export default function Login() {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    setError('');
-    axios.post('http://localhost:8080/api/auth/login', form)
-      .then(res => {
-        setSuccess(true);
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        setError("");
 
-        const role = res.data.role;
-        const userId = res.data.id;
+        try {
+            for (const { role, url } of loginEndpoints) {
+                const res = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password }),
+                });
 
-        const firstName = res.data.firstName || '';
-        const lastName = res.data.lastName || '';
-        const name = (firstName + ' ' + lastName).trim() || res.data.name || '';
-        const email = res.data.email || '';
-        localStorage.setItem('role', role);
-        if (userId) {
-          localStorage.setItem('userId', userId);
+                if (res.ok) {
+                    const userData = await res.json();
+                    console.log(`${role} logged in:`, userData);
+                    navigate(`/dashboard/${role.toLowerCase()}`);
+                    return;
+                }
+            }
+            setError("Invalid email or password");
+        } catch (err) {
+            console.error("Login error:", err);
+            setError("Incorrect email or password.");
         }
+    };
 
-        localStorage.setItem('user', JSON.stringify({ name, firstName, lastName, email, id: userId, role }));
-
-        if (role === 'ADMIN') {
-          navigate('/admin-dashboard');
-        } else if (role === 'EMPLOYER') {
-          navigate('/employer-dashboard');
-        } else if (role === 'JOB_SEEKER') {
-          navigate('/jobseeker-dashboard');
-        } else {
-          navigate('/');
-        }
-      })
-      .catch(() => setError('Invalid email or password'));
-  };
-
-  return (
-    <Box minHeight="100vh" minWidth="100vw" display="flex" justifyContent="center" alignItems="center" sx={{ background: 'rgba(240,245,255,0.5)', position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 10 }}>
-      <Card sx={{ maxWidth: 420, width: '100%', boxShadow: 6, borderRadius: 4, p: 2, background: 'linear-gradient(135deg, #1976d2 60%, #00bcd4 100%)', mx: 'auto' }}>
-        <CardContent>
-          <Typography variant="h4" gutterBottom textAlign="center" sx={{ color: '#fff', fontWeight: 700 }}>
-            Login
-          </Typography>
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-            <TextField label="Email" name="email" type="email" value={form.email} onChange={handleChange} required sx={{ bgcolor: '#fff', borderRadius: 2 }} />
-            <TextField label="Password" name="password" type="password" value={form.password} onChange={handleChange} required sx={{ bgcolor: '#fff', borderRadius: 2 }} />
-            <Button type="submit" variant="contained" color="secondary" size="large" sx={{ fontWeight: 600, borderRadius: 2, mt: 2 }}>Login</Button>
-          </form>
-          {error && <Typography color="error" mt={2} textAlign="center">{error}</Typography>}
-          {success && <Typography color="success.main" mt={2} textAlign="center">Login successful!</Typography>}
-        </CardContent>
-      </Card>
-    </Box>
-  );
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+            <form
+                onSubmit={handleLogin}
+                className="bg-white p-8 shadow-md rounded-2xl w-96"
+            >
+                <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+                {error && <p className="text-red-500 mb-4">{error}</p>}
+                <input
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full px-4 py-2 mb-4 border rounded-md focus:outline-none"
+                    required
+                />
+                <input
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full px-4 py-2 mb-6 border rounded-md focus:outline-none"
+                    required
+                />
+                <button
+                    type="submit"
+                    className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
+                >
+                    Login
+                </button>
+            </form>
+        </div>
+    );
 }
-
-export default Login;
