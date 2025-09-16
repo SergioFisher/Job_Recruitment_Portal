@@ -17,6 +17,7 @@ export default function HomePage() {
                         <Link to="/employer/login" className="text-gray-700 hover:text-blue-600">Employers</Link>
                         <Link to="/jobs" className="text-gray-700 hover:text-blue-600">Job Listings</Link>
                         <Link to="/register" className="text-gray-700 hover:text-blue-600">Register</Link>
+                        <Link to="/jobseekerdashboard" className="text-gray-700 hover:text-blue-600">JobSeekerDashBoard</Link>
                     </nav>
                 </div>
             </header>
