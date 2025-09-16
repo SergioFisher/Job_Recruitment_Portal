@@ -2,6 +2,7 @@ package za.ac.cput.service;
 
 import org.springframework.stereotype.Service;
 import za.ac.cput.domain.JobListing;
+import za.ac.cput.domain.JobSeeker;
 import za.ac.cput.repository.JobListingRepository;
 
 import java.util.List;
@@ -16,11 +17,11 @@ public class JobListingService {
         this.repository = repository;
     }
 
-    public JobListing save(JobListing jobListing) {
+    public JobListing create(JobListing jobListing) {
         return repository.save(jobListing);
     }
 
-    public Optional<JobListing> findById(Integer id) {
+    public Optional<JobListing> read(Integer id) {
         return repository.findById(id);
     }
 
@@ -35,8 +36,16 @@ public class JobListingService {
         return repository.save(jobListing);
     }
 
-    public void deleteById(Integer id) {
-        repository.deleteById(id);
+    public boolean delete(Integer id) {
+        if (repository.existsById(id)) {
+            repository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
+    public List<JobListing> getAll() {
+        return repository.findAll();
     }
 
 }

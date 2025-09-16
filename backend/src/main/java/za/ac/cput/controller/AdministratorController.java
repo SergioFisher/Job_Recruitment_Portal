@@ -2,18 +2,26 @@ package za.ac.cput.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import za.ac.cput.domain.Administrator;
+import za.ac.cput.domain.Employer;
+import za.ac.cput.domain.JobListing;
+import za.ac.cput.domain.JobSeeker;
 import za.ac.cput.service.AdministratorService;
+import za.ac.cput.service.EmployerService;
+import za.ac.cput.service.JobListingService;
+import za.ac.cput.service.JobSeekerService;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/administrator")
-@CrossOrigin(origins = "http://localhost:5137")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AdministratorController {
 
 
@@ -101,25 +109,6 @@ public class AdministratorController {
 
 
 
-
-    //Runner for testing in console
-    @Component
-    public static class TestDataRunner implements org.springframework.boot.CommandLineRunner {
-        private final AdministratorService administratorService;
-
-        public TestDataRunner(AdministratorService administratorService) {
-            this.administratorService = administratorService;
-        }
-
-        @Override
-        public void run(String... args) {
-            System.out.println("Fetching all administrators:");
-            administratorService.getAll().forEach(System.out::println);
-        }
-    }
-
-
-
     @GetMapping("/ping")
     public String ping() {
         System.out.println("Ping received!");
@@ -128,4 +117,118 @@ public class AdministratorController {
 
 
 
-}
+
+
+
+
+
+
+
+
+
+
+
+
+    @Autowired
+    private EmployerService employerService;
+
+    @Autowired
+    private JobSeekerService jobSeekerService;
+
+    @Autowired
+    private JobListingService jobListingService;
+
+    // -------------------- EMPLOYERS --------------------
+    @GetMapping("/employers")
+    public ResponseEntity<List<Employer>> getAllEmployers() {
+        return ResponseEntity.ok(employerService.getAll());
+    }
+
+    @PostMapping(value = "/employers", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Employer> createEmployer(@RequestBody Employer employer) {
+        Employer saved = employerService.save(employer);
+        return ResponseEntity.ok(saved);
+    }
+
+    @PutMapping("/employers/{id}")
+    public ResponseEntity<Employer> updateEmployer(@PathVariable Integer id, @RequestBody Employer employer) {
+        Optional<Employer> existing = employerService.read(id);
+        if (existing.isPresent()) {
+            Employer updated = employerService.update(
+                    new Employer.Builder().copy(existing.get())
+                            .setCompanyName(employer.getCompanyName())
+                            .setEmail(employer.getEmail())
+                            .setLocation(employer.getLocation())
+                            .setIndustry(employer.getIndustry())
+                            .setWebsite(employer.getWebsite())
+                            .setRole(employer.getRole())
+                            .build()
+            );
+            return ResponseEntity.ok(updated);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("/employers/{id}")
+    public ResponseEntity<Void> deleteEmployer(@PathVariable Integer id) {
+        return employerService.delete(id) ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    }
+
+    // -------------------- JOB SEEKERS --------------------
+    @GetMapping("/jobseekers")
+    public ResponseEntity<List<JobSeeker>> getAllJobSeekers() {
+        return ResponseEntity.ok(jobSeekerService.getAll());
+    }
+
+    @PostMapping("/jobseekers")
+    public ResponseEntity<JobSeeker> createJobSeeker(@RequestBody JobSeeker jobSeeker) {
+        return ResponseEntity.ok(jobSeekerService.create(jobSeeker));
+    }
+
+    @PutMapping("/jobseekers/{id}")
+    public ResponseEntity<JobSeeker> updateJobSeeker(@PathVariable Integer id, @RequestBody JobSeeker jobSeeker) {
+        JobSeeker updated = jobSeekerService.update(id, jobSeeker);
+        return updated != null ? ResponseEntity.ok(updated) : ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("/jobseekers/{id}")
+    public ResponseEntity<Void> deleteJobSeeker(@PathVariable Integer id) {
+        return jobSeekerService.delete(id) ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    }
+
+    // -------------------- JOB LISTINGS --------------------
+    @GetMapping("/jobs")
+    public ResponseEntity<List<JobListing>> getAllJobs() {
+        return ResponseEntity.ok(jobListingService.getAll());
+    }
+
+    @PostMapping("/jobs")
+    public ResponseEntity<JobListing> createJob(@RequestBody JobListing jobListing) {
+        return ResponseEntity.ok(jobListingService.create(jobListing));
+    }
+
+    @PutMapping("/jobs/{id}")
+    public ResponseEntity<JobListing> updateJob(@PathVariable Integer id, @RequestBody JobListing jobListing) {
+        Optional<JobListing> existing = jobListingService.read(id);
+        if (existing.isPresent()) {
+            JobListing updated = jobListingService.update(
+                    new JobListing.Builder().copy(existing.get())
+                            .setTitle(jobListing.getTitle())
+                            .setDescription(jobListing.getDescription())
+                            .setLocation(jobListing.getLocation())
+                            .setEmploymentType(jobListing.getEmploymentType())
+                            .setStatus(jobListing.getStatus())
+                            .setEmployer(jobListing.getEmployer())
+                            .build()
+            );
+            return ResponseEntity.ok(updated);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("/jobs/{id}")
+    public ResponseEntity<Void> deleteJob(@PathVariable Integer id) {
+        return jobListingService.delete(id) ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    }
+  }
+

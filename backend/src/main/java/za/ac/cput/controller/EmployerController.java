@@ -9,7 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/employers")
-@CrossOrigin(origins = "http://localhost:5137")
+@CrossOrigin(origins = "http://localhost:3000")
 public class EmployerController {
 
     @Autowired
@@ -51,7 +51,13 @@ public class EmployerController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("getAll")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteEmployer(@PathVariable Integer id) {
+        boolean deleted = service.delete(id); // Implement delete in your service
+        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    }
+
+    @GetMapping
     public ResponseEntity<List<Employer>> getAll() {
         List<Employer> all = service.getAll();
         return ResponseEntity.ok(all);

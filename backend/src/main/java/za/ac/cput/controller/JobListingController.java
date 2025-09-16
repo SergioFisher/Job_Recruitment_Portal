@@ -11,6 +11,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/joblistings")
+@CrossOrigin(origins = "http://localhost:3000")
 public class JobListingController {
 
     private final JobListingRepository repository;
@@ -42,7 +43,7 @@ public class JobListingController {
         }
         jobListing = new JobListing.Builder()
                 .copy(jobListing)
-                .setId(id) // ensure we update the correct entity
+                .setId(id)
                 .build();
 
         JobListing updated = repository.save(jobListing);
