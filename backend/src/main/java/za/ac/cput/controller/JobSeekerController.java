@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/jobseekers")
-@CrossOrigin(origins = "http://localhost:5137") // adjust if needed
+@CrossOrigin(origins = "http://localhost:3000")
 public class JobSeekerController {
 
     @Autowired

@@ -1,6 +1,9 @@
 import { BrowserRouter as Router, Routes, Route , useParams } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminManageEmployers from "./pages/AdminManageEmployers";
+import AdminManageJobSeekers from "./pages/AdminManageJobSeekers";
+import AdminManageJobs from "./pages/AdminManageJobs";
 import JobSeekerDashboard from "./pages/JobSeekerDashboard";
 import EmployerDashboard from "./pages/EmployerDashboard";
 import Register from "./pages/Register";
@@ -18,6 +21,9 @@ function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/dashboard/administrator" element={<AdminDashboard />} />
+                <Route path="/dashboard/admin/employers" element={<AdminManageEmployers />} />
+                <Route path="/dashboard/admin/jobseekers" element={<AdminManageJobSeekers />} />
+                <Route path="/dashboard/admin/jobs" element={<AdminManageJobs />} />
                 <Route path="/dashboard/jobseeker" element={<JobSeekerDashboard />} />
                 <Route path="/dashboard/employer" element={<EmployerDashboard />} />
                 <Route path="/register" element={<Register />} />

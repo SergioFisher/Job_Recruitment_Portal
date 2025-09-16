@@ -36,6 +36,14 @@ public class EmployerService implements IEmployerService{
         throw new IllegalArgumentException("Employer with ID " + employer.getEmployerID() + " does not exist.");
     }
 
+    public boolean delete(Integer id) {
+        if (repository.existsById(id)) {
+            repository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public List<Employer> getAll() {
         return repository.findAll();
