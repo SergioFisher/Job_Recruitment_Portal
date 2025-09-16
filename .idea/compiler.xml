@@ -7,12 +7,17 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="Job_Recruitment_Portal-main" />
         <module name="jobRecruitmentPortal" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="jobRecruitmentPortal" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Job_Recruitment_Portal-main" options="-parameters" />
       <module name="jobRecruitmentPortal" options="-parameters" />
     </option>
   </component>

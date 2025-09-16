@@ -18,9 +18,6 @@ public class AdministratorService implements IAdministratorService {
     }
 
     public Administrator create(Administrator administrator) {
-        if (repository.findByEmailIgnoreCase(administrator.getEmail()) != null) {
-            throw new IllegalArgumentException("Administrator with this email already exists.");
-        }
         return repository.save(administrator);
     }
 
@@ -44,8 +41,7 @@ public class AdministratorService implements IAdministratorService {
     }
 
     public Administrator findByEmail(String email) {
-        if (email == null) return null;
-        return repository.findByEmailIgnoreCase(email.trim());
+        return repository.findByEmail(email);
     }
 
     @Override
