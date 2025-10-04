@@ -1,16 +1,13 @@
 package za.ac.cput.service;
 
 import za.ac.cput.domain.JobListing;
-
 import java.util.List;
 import java.util.Optional;
 
 public interface IJobListingService {
-    JobListing save(JobListing jobListing);
-    Optional<JobListing> findById(Integer id);
-    List<JobListing> findAll();
+    JobListing create(JobListing jobListing);
+    Optional<JobListing> read(Long id);
     JobListing update(JobListing jobListing);
-    void deleteById(Integer id);
-
+    void delete(Long id);
+    List<JobListing> getAll();
 }
-

@@ -1,41 +1,60 @@
 package za.ac.cput.service;
 
-import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import za.ac.cput.domain.Employer;
 import za.ac.cput.repository.EmployerRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
-@Transactional
-public class EmployerService implements IEmployerService{
+public class EmployerService {
 
     private final EmployerRepository repository;
 
+    @Autowired
     public EmployerService(EmployerRepository repository) {
         this.repository = repository;
     }
 
-    @Override
-    public Employer save(Employer employer) {
+    // CREATE
+    public Employer create(Employer employer) {
         return repository.save(employer);
     }
 
-    @Override
-    public Optional<Employer> read(Integer id) {
-        return repository.findById(id);
+    // READ
+    public Employer read(Integer id) {
+        return repository.findById(id).orElse(null);
     }
 
-    @Override
-    public Employer update(Employer employer) {
-        if (repository.existsById(employer.getEmployerID())) {
-            return repository.save(employer);
-        }
-        throw new IllegalArgumentException("Employer with ID " + employer.getEmployerID() + " does not exist.");
+    // UPDATE
+    public Employer update(Integer id, Employer employer) {
+        return repository.findById(id).map(existing -> {
+            Employer updated = new Employer.Builder()
+                    .setEmail(employer.getEmail())
+                    .setPassword(employer.getPassword())
+                    .setRole(existing.getRole()) // keep role consistent
+                    .setCompanyName(employer.getCompanyName())
+                    .setIndustry(employer.getIndustry())
+                    .setWebsite(employer.getWebsite())
+                    .setLocation(employer.getLocation())
+                    .setContactPerson(employer.getContactPerson())
+                    .build();
+
+            // ✅ preserve same ID
+            try {
+                java.lang.reflect.Field field = Employer.class.getDeclaredField("employerID");
+                field.setAccessible(true);
+                field.set(updated, id);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to set employer ID", e);
+            }
+
+            return repository.save(updated);
+        }).orElse(null);
     }
 
+    // DELETE
     public boolean delete(Integer id) {
         if (repository.existsById(id)) {
             repository.deleteById(id);
@@ -44,8 +63,13 @@ public class EmployerService implements IEmployerService{
         return false;
     }
 
-    @Override
+    // GET ALL
     public List<Employer> getAll() {
         return repository.findAll();
+    }
+
+    // ✅ Needed for login
+    public Employer findByEmail(String email) {
+        return repository.findByEmail(email);
     }
 }

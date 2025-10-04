@@ -1,123 +1,101 @@
 package za.ac.cput.domain;
 
 import jakarta.persistence.*;
-import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "administrators")
-@PrimaryKeyJoinColumn(name = "userID")
-public class Administrator extends User {
+public class Administrator {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer administratorID;
+
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false)
+    private String password;
+
+    private String role;
     private String userName;
 
-    private boolean deleteJobs = true;
-
-
-
-    public Administrator(String email, String password, String role) {
-
-        super(email, password, "ADMINISTRATOR");
+    protected Administrator() {
     }
 
-    public Administrator() {
-
-        super();
-    }
-
-
-    private Administrator(Builder builder){
-
-        super(builder.email, builder.password, "ADMINISTRATOR");
+    private Administrator(Builder builder) {
+        this.administratorID = builder.administratorID; // Will be auto-generated if null
+        this.email = builder.email;
+        this.password = builder.password;
+        this.role = builder.role != null ? builder.role : "ADMIN";
         this.userName = builder.userName;
-        this.deleteJobs = builder.deleteJobs;
-
     }
 
-
+    // Getters
     public Integer getAdministratorID() {
-        return super.getUserID();
+        return administratorID;
     }
 
-    public String getEmail() {
-        return super.getEmail();
-    }
+    public String getEmail() { return email; }
 
-    public String getPassword() {
-        return super.getPassword();
-    }
+    public String getPassword() { return password; }
 
-    public String getRole() {
-        return super.getRole();
-    }
+    public String getRole() { return role; }
 
-    public String getUserName() { return userName;}
-
-    public boolean isDeleteJobs() { return deleteJobs;}
-
+    public String getUserName() { return userName; }
 
     @Override
     public String toString() {
         return "Administrator{" +
-                "userName='" + userName + '\'' +
-                ", deleteJobs=" + deleteJobs +
+                "administratorID=" + administratorID +
+                ", email='" + email + '\'' +
+                ", userName='" + userName + '\'' +
+                ", role='" + role + '\'' +
                 '}';
     }
 
-
-
     public static class Builder {
-
+        private Integer administratorID; // optional (ignored if null, DB generates it)
         private String email;
         private String password;
-        private String role = "ADMINISTRATOR";
-
+        private String role = "ADMIN"; // default role
         private String userName;
 
-        private boolean deleteJobs;
+        public Builder setAdministratorID(Integer administratorID) {
+            this.administratorID = administratorID;
+            return this;
+        }
 
-
-        public Administrator.Builder setEmail(String email) {
+        public Builder setEmail(String email) {
             this.email = email;
             return this;
         }
 
-        public Administrator.Builder setPassword(String password) {
+        public Builder setPassword(String password) {
             this.password = password;
             return this;
         }
 
-        public Administrator.Builder setRole(String role) {
+        public Builder setRole(String role) {
             this.role = role;
             return this;
         }
 
-        public Administrator.Builder setName(String userName) {
+        public Builder setUserName(String userName) {
             this.userName = userName;
             return this;
         }
 
-
-        public Administrator.Builder setDeleteJobs(boolean deleteJobs) {
-            this.deleteJobs = deleteJobs;
-            return this;
-        }
-
-
-        public Administrator.Builder copy(Administrator administrator) {
+        public Builder copy(Administrator administrator) {
+            this.administratorID = administrator.getAdministratorID();
             this.email = administrator.getEmail();
             this.password = administrator.getPassword();
             this.role = administrator.getRole();
-            this.userName = administrator.userName;
-            this.deleteJobs = administrator.deleteJobs;
+            this.userName = administrator.getUserName();
             return this;
         }
 
         public Administrator build() {
             return new Administrator(this);
         }
-
     }
 }
