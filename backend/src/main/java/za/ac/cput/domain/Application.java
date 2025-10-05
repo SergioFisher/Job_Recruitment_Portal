@@ -17,11 +17,9 @@ public class Application {
 
 
     @ManyToOne
-    @JoinColumn(name = "job_seeker_id", referencedColumnName = "userID")
     private JobSeeker jobSeeker;
 
     @ManyToOne
-    @JoinColumn(name = "job_listing_id", referencedColumnName = "id")
     private JobListing jobListing;
 
     @Column(name = "cover_letter")
