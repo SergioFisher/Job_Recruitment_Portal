@@ -8,10 +8,14 @@ import za.ac.cput.repository.JobSeekerRepository;
 import java.util.List;
 
 @Service
-public class JobSeekerService implements IJobSeekerService {
+public class JobSeekerService {
+
+    private final JobSeekerRepository repository;
 
     @Autowired
-    private JobSeekerRepository repository;
+    public JobSeekerService(JobSeekerRepository repository) {
+        this.repository = repository;
+    }
 
     public JobSeeker create(JobSeeker jobSeeker) {
         return repository.save(jobSeeker);
@@ -22,13 +26,22 @@ public class JobSeekerService implements IJobSeekerService {
     }
 
     public JobSeeker update(Integer id, JobSeeker jobSeeker) {
-        if (repository.existsById(id)) {
-            jobSeeker = new JobSeeker.Builder()
+        return repository.findById(id).map(existing -> {
+            JobSeeker updated = new JobSeeker.Builder()
                     .copy(jobSeeker)
                     .build();
-            return repository.save(jobSeeker);
-        }
-        return null;
+
+            // Ensure same ID
+            try {
+                java.lang.reflect.Field field = JobSeeker.class.getDeclaredField("jobSeekerID");
+                field.setAccessible(true);
+                field.set(updated, id);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to set jobSeeker ID", e);
+            }
+
+            return repository.save(updated);
+        }).orElse(null);
     }
 
     public boolean delete(Integer id) {
@@ -41,5 +54,10 @@ public class JobSeekerService implements IJobSeekerService {
 
     public List<JobSeeker> getAll() {
         return repository.findAll();
+    }
+
+    // ✅ For login
+    public JobSeeker findByEmail(String email) {
+        return repository.findByEmail(email);
     }
 }
