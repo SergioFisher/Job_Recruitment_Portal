@@ -1,0 +1,262 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import {
+    Container,
+    Typography,
+    Card,
+    CardContent,
+    Grid,
+    CircularProgress,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    TextField,
+} from "@mui/material";
+import MainLayout from "../Layout/MainLayout"; // ✅ Import your layout
+
+const JobSeekerDashboard = () => {
+    const [jobSeekers, setJobSeekers] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [open, setOpen] = useState(false);
+    const [editingJobSeeker, setEditingJobSeeker] = useState(null);
+    const [formData, setFormData] = useState({
+        fullName: "",
+        email: "",
+        phoneNumber: "",
+        dateOfBirth: "",
+        location: "",
+        resume: "",
+        password: "",
+    });
+
+    // Fetch JobSeekers
+    const fetchJobSeekers = async () => {
+        try {
+            const response = await axios.get(
+                "http://localhost:8080/jobRecruitmentPortal/jobRecruitmentPortal/jobseekers"
+            );
+            setJobSeekers(response.data);
+            setLoading(false);
+        } catch (error) {
+            console.error("Error fetching JobSeekers:", error);
+            setLoading(false);
+        }
+    };
+
+    // Delete JobSeeker
+    const deleteJobSeeker = async (id) => {
+        if (!window.confirm("Are you sure you want to delete this job seeker?")) return;
+        try {
+            await axios.delete(
+                `http://localhost:8080/jobRecruitmentPortal/jobRecruitmentPortal/jobseekers/${id}`
+            );
+            setJobSeekers(jobSeekers.filter((seeker) => seeker.id !== id));
+        } catch (error) {
+            console.error("Error deleting JobSeeker:", error);
+            alert("Failed to delete job seeker. Please try again.");
+        }
+    };
+
+    // Handle Add/Edit Open
+    const handleOpen = (seeker = null) => {
+        if (seeker) {
+            setEditingJobSeeker(seeker);
+            setFormData(seeker);
+        } else {
+            setEditingJobSeeker(null);
+            setFormData({
+                fullName: "",
+                email: "",
+                phoneNumber: "",
+                dateOfBirth: "",
+                location: "",
+                resume: "",
+                password: "",
+            });
+        }
+        setOpen(true);
+    };
+
+    // Handle Close
+    const handleClose = () => {
+        setOpen(false);
+        setEditingJobSeeker(null);
+    };
+
+    // Handle Save (Add or Update)
+    const handleSave = async () => {
+        try {
+            if (editingJobSeeker) {
+                // Update
+                const response = await axios.put(
+                    `http://localhost:8080/jobRecruitmentPortal/jobRecruitmentPortal/jobseekers/${editingJobSeeker.id}`,
+                    formData
+                );
+                setJobSeekers(
+                    jobSeekers.map((seeker) =>
+                        seeker.id === editingJobSeeker.id ? response.data : seeker
+                    )
+                );
+            } else {
+                // Add
+                const response = await axios.post(
+                    "http://localhost:8080/jobRecruitmentPortal/jobRecruitmentPortal/jobseekers/register",
+                    formData
+                );
+                setJobSeekers([...jobSeekers, response.data]);
+            }
+            handleClose();
+        } catch (error) {
+            console.error("Error saving JobSeeker:", error);
+            alert("Failed to save job seeker. Please try again.");
+        }
+    };
+
+    useEffect(() => {
+        fetchJobSeekers();
+    }, []);
+
+    if (loading) {
+        return (
+            <MainLayout>
+                <Container style={{ textAlign: "center", marginTop: "50px" }}>
+                    <CircularProgress />
+                    <Typography>Loading JobSeekers...</Typography>
+                </Container>
+            </MainLayout>
+        );
+    }
+
+    return (
+        <MainLayout>
+            <Container style={{ marginTop: "30px" }}>
+                <Typography variant="h4" gutterBottom>
+                    JobSeeker Dashboard
+                </Typography>
+
+                {/* Add JobSeeker Button */}
+                <Button
+                    variant="contained"
+                    color="primary"
+                    style={{ marginBottom: "20px" }}
+                    onClick={() => handleOpen()}
+                >
+                    Add JobSeeker
+                </Button>
+
+                <Grid container spacing={3}>
+                    {jobSeekers.map((seeker) => (
+                        <Grid item xs={12} sm={6} md={4} key={seeker.id}>
+                            <Card className="p-4 shadow-md rounded-xl">
+                                <CardContent>
+                                    <Typography variant="h6">{seeker.fullName}</Typography>
+                                    <Typography>Email: {seeker.email}</Typography>
+                                    <Typography>Phone: {seeker.phoneNumber}</Typography>
+                                    <Typography>DOB: {seeker.dateOfBirth}</Typography>
+                                    <Typography>Location: {seeker.location}</Typography>
+                                    <Typography>Summary: {seeker.resume}</Typography>
+
+                                    <div className="flex justify-between mt-4">
+                                        <Button
+                                            variant="outlined"
+                                            color="primary"
+                                            onClick={() => handleOpen(seeker)}
+                                        >
+                                            Update
+                                        </Button>
+                                        <Button
+                                            variant="contained"
+                                            color="error"
+                                            onClick={() => deleteJobSeeker(seeker.id)}
+                                        >
+                                            Delete
+                                        </Button>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                    ))}
+                </Grid>
+
+                {/* Add/Edit Dialog */}
+                <Dialog open={open} onClose={handleClose} fullWidth>
+                    <DialogTitle>
+                        {editingJobSeeker ? "Update JobSeeker" : "Add JobSeeker"}
+                    </DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            label="Full Name"
+                            fullWidth
+                            margin="normal"
+                            value={formData.fullName}
+                            onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                        />
+                        <TextField
+                            label="Email"
+                            fullWidth
+                            margin="normal"
+                            value={formData.email}
+                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        />
+                        <TextField
+                            label="Phone Number"
+                            fullWidth
+                            margin="normal"
+                            value={formData.phoneNumber}
+                            onChange={(e) =>
+                                setFormData({ ...formData, phoneNumber: e.target.value })
+                            }
+                        />
+                        <TextField
+                            label="Date of Birth"
+                            type="date"
+                            fullWidth
+                            margin="normal"
+                            InputLabelProps={{ shrink: true }}
+                            value={formData.dateOfBirth}
+                            onChange={(e) =>
+                                setFormData({ ...formData, dateOfBirth: e.target.value })
+                            }
+                        />
+                        <TextField
+                            label="Location"
+                            fullWidth
+                            margin="normal"
+                            value={formData.location}
+                            onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                        />
+                        <TextField
+                            label="Profile Summary"
+                            fullWidth
+                            margin="normal"
+                            multiline
+                            rows={3}
+                            value={formData.resume}
+                            onChange={(e) => setFormData({ ...formData, resume: e.target.value })}
+                        />
+                        <TextField
+                            label="Password"
+                            type="password"
+                            fullWidth
+                            margin="normal"
+                            value={formData.password}
+                            onChange={(e) =>
+                                setFormData({ ...formData, password: e.target.value })
+                            }
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose}>Cancel</Button>
+                        <Button onClick={handleSave} variant="contained" color="primary">
+                            Save
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </Container>
+        </MainLayout>
+    );
+};
+
+export default JobSeekerDashboard;
