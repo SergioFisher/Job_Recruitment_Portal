@@ -1,101 +1,120 @@
 package za.ac.cput.domain;
 
 import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "administrators")
-public class Administrator {
+@PrimaryKeyJoinColumn(name = "userID")
+public class Administrator extends User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer administratorID;
-
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    @Column(nullable = false)
-    private String password;
-
-    private String role;
     private String userName;
 
-    protected Administrator() {
+
+
+
+
+    public Administrator(String email, String password, String role) {
+
+        super(email, password, "ADMINISTRATOR");
     }
 
-    private Administrator(Builder builder) {
-        this.administratorID = builder.administratorID; // Will be auto-generated if null
-        this.email = builder.email;
-        this.password = builder.password;
-        this.role = builder.role != null ? builder.role : "ADMIN";
+    public Administrator() {
+
+        super();
+    }
+
+
+    private Administrator(Builder builder){
+
+        super(builder.email, builder.password, "ADMINISTRATOR");
         this.userName = builder.userName;
+
     }
 
-    // Getters
+
     public Integer getAdministratorID() {
-        return administratorID;
+        return super.getUserID();
     }
 
-    public String getEmail() { return email; }
+    public String getEmail() {
+        return super.getEmail();
+    }
 
-    public String getPassword() { return password; }
+    public String getPassword() {
+        return super.getPassword();
+    }
 
-    public String getRole() { return role; }
+    public String getRole() {
+        return super.getRole();
+    }
 
-    public String getUserName() { return userName; }
+    public String getUserName() { return userName;}
+
+
 
     @Override
     public String toString() {
         return "Administrator{" +
-                "administratorID=" + administratorID +
-                ", email='" + email + '\'' +
-                ", userName='" + userName + '\'' +
-                ", role='" + role + '\'' +
+                "userName='" + userName + '\'' +
                 '}';
     }
 
+
+
     public static class Builder {
-        private Integer administratorID; // optional (ignored if null, DB generates it)
+
         private String email;
         private String password;
-        private String role = "ADMIN"; // default role
+        private String role = "ADMINISTRATOR";
+
         private String userName;
 
-        public Builder setAdministratorID(Integer administratorID) {
-            this.administratorID = administratorID;
-            return this;
-        }
+        private boolean deleteJobs;
 
-        public Builder setEmail(String email) {
+
+        public Administrator.Builder setEmail(String email) {
             this.email = email;
             return this;
         }
 
-        public Builder setPassword(String password) {
+        public Administrator.Builder setPassword(String password) {
             this.password = password;
             return this;
         }
 
-        public Builder setRole(String role) {
+        public Administrator.Builder setRole(String role) {
             this.role = role;
             return this;
         }
 
-        public Builder setUserName(String userName) {
+        public Administrator.Builder setName(String userName) {
             this.userName = userName;
             return this;
         }
 
-        public Builder copy(Administrator administrator) {
-            this.administratorID = administrator.getAdministratorID();
+
+        public Administrator.Builder setDeleteJobs(boolean deleteJobs) {
+            this.deleteJobs = deleteJobs;
+            return this;
+        }
+
+
+        public Administrator.Builder copy(Administrator administrator) {
             this.email = administrator.getEmail();
             this.password = administrator.getPassword();
             this.role = administrator.getRole();
-            this.userName = administrator.getUserName();
+            this.userName = administrator.userName;
             return this;
         }
 
         public Administrator build() {
             return new Administrator(this);
         }
+
     }
 }
+
