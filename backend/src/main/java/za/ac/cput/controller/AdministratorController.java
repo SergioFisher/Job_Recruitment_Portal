@@ -7,46 +7,57 @@ import org.springframework.web.bind.annotation.*;
 import za.ac.cput.domain.Administrator;
 import za.ac.cput.service.AdministratorService;
 
-import java.util.HashMap;
+
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/administrators")
+@RequestMapping("/administrator")
 @CrossOrigin(origins = "http://localhost:3000")
 public class AdministratorController {
 
-    private final AdministratorService service;
+
 
     @Autowired
-    public AdministratorController(AdministratorService service) {
-        this.service = service;
-    }
+    private AdministratorService service;
 
-    // LOGIN
+
+
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<Administrator> login(@RequestBody Map<String, String> payload) {
         String email = payload.get("email");
         String password = payload.get("password");
 
+        System.out.println("Payload received: " + payload);
+
+        System.out.println("Login attempt: [" + email + "] / [" + password + "]");
+
         Administrator administrator = service.findByEmail(email);
 
-        if (administrator != null && administrator.getPassword().equals(password)) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("message", "Administrator login successful ✅");
-            response.put("administratorId", administrator.getAdministratorID());
-            response.put("role", "ADMINISTRATOR");
-            return ResponseEntity.ok(response);
+        if (administrator != null) {
+            System.out.println("Found admin: " + administrator);
+            if (administrator.getPassword().equals(password)) {
+                System.out.println("Login success!");
+                return ResponseEntity.ok(administrator);
+            } else {
+                System.out.println("Incorrect password");
+            }
+        } else {
+            System.out.println("Admin not found");
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password ❌");
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
 
     // CREATE
     @PostMapping
     public ResponseEntity<Administrator> create(@RequestBody Administrator administrator) {
-        return ResponseEntity.ok(service.create(administrator));
+        Administrator created = service.create(administrator);
+        return ResponseEntity.ok(created);
     }
+
+
 
     // READ
     @GetMapping("/{id}")
@@ -54,50 +65,35 @@ public class AdministratorController {
         Administrator administrator = service.read(id);
         return administrator != null ? ResponseEntity.ok(administrator) : ResponseEntity.notFound().build();
     }
+
+
+
     // UPDATE
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Integer id, @RequestBody Administrator updatedData) {
+    public ResponseEntity<Administrator> update(@PathVariable Integer id, @RequestBody Administrator updatedData) {
         Administrator existing = service.read(id);
         if (existing == null) {
             return ResponseEntity.notFound().build();
         }
 
-        Administrator updated = new Administrator.Builder()
+        // use Builder.copy() to update safely
+        Administrator updatedAdmin = new Administrator.Builder()
                 .copy(existing)
                 .setEmail(updatedData.getEmail())
                 .setPassword(updatedData.getPassword())
-                .setUserName(updatedData.getUserName())
                 .build();
 
-        // ✅ ensure ID is carried over
-        updated = new Administrator.Builder()
-                .copy(updated)
-                .setAdministratorID(id)
-                .build();
-
-        Administrator result = service.update(updated); // now consistent
+        Administrator result = service.update(updatedAdmin);
         return ResponseEntity.ok(result);
     }
 
 
-    // DELETE
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Integer id) {
-        if (service.delete(id)) {
-            return ResponseEntity.ok("Administrator deleted successfully ✅");
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Administrator not found ❌");
-    }
 
     // GET ALL
-    @GetMapping
+    @GetMapping("getAll")
     public ResponseEntity<List<Administrator>> getAll() {
-        return ResponseEntity.ok(service.getAll());
+        List<Administrator> all = service.getAll();
+        return ResponseEntity.ok(all);
     }
 
-    // PING
-    @GetMapping("/ping")
-    public String ping() {
-        return "Administrator backend running 🚀";
-    }
 }
