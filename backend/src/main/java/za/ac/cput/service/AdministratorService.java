@@ -8,7 +8,7 @@ import za.ac.cput.repository.AdministratorRepository;
 import java.util.List;
 
 @Service
-public class AdministratorService {
+public class AdministratorService implements IAdministratorService {
 
     private final AdministratorRepository repository;
 
@@ -21,19 +21,17 @@ public class AdministratorService {
         return repository.save(administrator);
     }
 
+    @Override
     public Administrator read(Integer id) {
         return repository.findById(id).orElse(null);
     }
 
-
+    @Override
     public Administrator update(Administrator administrator) {
-        if (repository.existsById(administrator.getAdministratorID())) {
-            return repository.save(administrator);
-        }
-        return null;
+        return repository.save(administrator);
     }
 
-
+    @Override
     public boolean delete(Integer id) {
         if (repository.existsById(id)) {
             repository.deleteById(id);
@@ -42,12 +40,12 @@ public class AdministratorService {
         return false;
     }
 
-    public List<Administrator> getAll() {
-        return repository.findAll();
-    }
-
-    // ✅ For login
     public Administrator findByEmail(String email) {
         return repository.findByEmail(email);
+    }
+
+    @Override
+    public List<Administrator> getAll() {
+        return repository.findAll();
     }
 }
