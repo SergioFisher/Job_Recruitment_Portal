@@ -1,29 +1,22 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import MainLayout from "../Layout/MainLayout";
 
 export default function HomePage() {
     const [job, setJob] = useState("");
     const [location, setLocation] = useState("");
+    const navigate = useNavigate();
+
+    const handleSearch = () => {
+        navigate(
+            `/jobs?title=${encodeURIComponent(job)}&location=${encodeURIComponent(location)}`
+        );
+    };
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col">
-            {/* Header */}
-            <header className="bg-white shadow-sm">
-                <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-                    <h1 className="text-2xl font-bold text-blue-600">JobFinder</h1>
-                    <nav className="space-x-6">
-                        <Link to="/login" className="text-gray-700 hover:text-blue-600">Login</Link>
-                        <Link to="/employer/login" className="text-gray-700 hover:text-blue-600">Employers</Link>
-                        <Link to="/jobs" className="text-gray-700 hover:text-blue-600">Job Listings</Link>
-                        <Link to="/register" className="text-gray-700 hover:text-blue-600">Register</Link>
-                        <Link to="/jobseekerdashboard" className="text-gray-700 hover:text-blue-600">JobSeekerDashBoard</Link>
-                    </nav>
-                </div>
-            </header>
-
-            {/* Search Section */}
-            <main className="flex-1 flex flex-col justify-center items-center text-center px-4">
+        <MainLayout>
+            <div className="flex flex-col justify-center items-center text-center px-4 py-20">
                 <h2 className="text-4xl font-extrabold text-gray-800 mb-6">
                     Find your next job
                 </h2>
@@ -47,18 +40,14 @@ export default function HomePage() {
                         onChange={(e) => setLocation(e.target.value)}
                         className="flex-1 px-4 py-3 border-b sm:border-b-0 sm:border-r border-gray-300 focus:outline-none"
                     />
-                    <button className="bg-blue-600 text-white px-6 py-3 flex items-center justify-center hover:bg-blue-700 transition">
+                    <button
+                        onClick={handleSearch}
+                        className="bg-blue-600 text-white px-6 py-3 flex items-center justify-center hover:bg-blue-700 transition"
+                    >
                         <Search className="w-5 h-5 mr-2" /> Search
                     </button>
                 </div>
-            </main>
-
-            {/* Footer */}
-            <footer className="bg-gray-100 py-6 mt-12">
-                <div className="max-w-7xl mx-auto text-center text-gray-500 text-sm">
-                    © {new Date().getFullYear()} JobFinder. All rights reserved.
-                </div>
-            </footer>
-        </div>
+            </div>
+        </MainLayout>
     );
 }
